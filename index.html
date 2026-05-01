@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZeroVis JP — ゼロトラスト可視化・コンプライアンス管理SaaS</title>
+  <meta name="description" content="自治体・製造業・医療機関向けゼロトラスト成熟度スコアリング。NISC・総務省ガイドライン自動チェック。IT導入補助金申請書をAIがワンクリック生成。">
+  <meta name="keywords" content="ゼロトラスト,NISC,総務省,IT導入補助金,自治体,製造業,医療,セキュリティ,コンプライアンス">
+  <meta property="og:title" content="ZeroVis JP — ゼロトラスト可視化・コンプライアンス管理SaaS">
+  <meta property="og:description" content="NISC・総務省ガイドライン準拠状況を自動スコアリング。IT導入補助金申請書をAIがワンクリック生成。自治体・製造業・医療機関向け。">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ja_JP">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:    #0f172a;
+      --cyan:    #06b6d4;
+      --cyan-d:  #0891b2;
+      --blue:    #3b82f6;
+      --gray1:   #111827;
+      --gray2:   #374151;
+      --gray3:   #6b7280;
+      --gray4:   #f3f4f6;
+      --white:   #ffffff;
+      --green:   #16a34a;
+    }
+    body { font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif; color: var(--gray1); background: var(--white); line-height: 1.7; }
+    nav { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 0 5%; height: 64px; background: rgba(255,255,255,.95); backdrop-filter: blur(8px); border-bottom: 1px solid #e5e7eb; }
+    .logo { font-size: 1.2rem; font-weight: 700; color: var(--cyan-d); }
+    .nav-cta { background: var(--cyan); color: #fff; padding: .5rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: .9rem; }
+    .nav-cta:hover { background: var(--cyan-d); }
+    .hero { background: linear-gradient(135deg, #0f172a 0%, #0c1a2e 50%, #0a2540 100%); color: #fff; padding: 90px 5% 80px; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 50%, rgba(6,182,212,.15) 0%, transparent 60%), radial-gradient(circle at 70% 30%, rgba(59,130,246,.1) 0%, transparent 60%); }
+    .hero-badge { display: inline-block; background: rgba(6,182,212,.2); border: 1px solid rgba(6,182,212,.4); color: #67e8f9; padding: .25rem .9rem; border-radius: 999px; font-size: .85rem; margin-bottom: 1.5rem; position: relative; }
+    .hero h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; line-height: 1.2; margin-bottom: 1.2rem; position: relative; }
+    .hero h1 span { color: #67e8f9; }
+    .hero p { font-size: 1.1rem; color: #94a3b8; max-width: 640px; margin: 0 auto 2.5rem; position: relative; }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+    .btn-primary { background: var(--cyan); color: #fff; padding: .85rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1rem; }
+    .btn-primary:hover { background: var(--cyan-d); }
+    .btn-secondary { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.3); padding: .85rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; }
+    .btn-secondary:hover { border-color: rgba(255,255,255,.6); }
+    /* Target */
+    .target { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; padding: 2rem 5%; background: #f0f9ff; border-bottom: 1px solid #bae6fd; font-size: .9rem; }
+    .target-item { display: flex; align-items: center; gap: .5rem; color: var(--gray2); font-weight: 600; }
+    .target-icon { font-size: 1.3rem; }
+    /* Score dashboard */
+    .score-section { padding: 80px 5%; background: var(--gray4); }
+    .score-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+    .score-inner h2 { font-size: 1.9rem; font-weight: 800; margin-bottom: .5rem; }
+    .score-sub { color: var(--gray3); margin-bottom: 2.5rem; }
+    .zt-dashboard { background: #0f172a; border-radius: 16px; padding: 2rem; font-family: monospace; font-size: .85rem; text-align: left; }
+    .zt-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid #1e293b; padding-bottom: 1rem; }
+    .zt-title { color: #67e8f9; font-size: .9rem; font-weight: 700; }
+    .zt-score-main { font-size: 2.5rem; font-weight: 800; color: #fbbf24; }
+    .zt-score-label { color: #64748b; font-size: .75rem; }
+    .zt-axes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .zt-axis { background: #1e293b; border-radius: 8px; padding: 1rem; }
+    .zt-axis-name { color: #94a3b8; font-size: .8rem; margin-bottom: .5rem; }
+    .zt-axis-score { font-size: 1.5rem; font-weight: 700; }
+    .zt-axis-bar { height: 4px; background: #334155; border-radius: 2px; margin-top: .5rem; overflow: hidden; }
+    .zt-axis-fill { height: 100%; border-radius: 2px; }
+    .fill-id   { background: #06b6d4; width: 65%; }
+    .fill-dev  { background: #a78bfa; width: 72%; }
+    .fill-app  { background: #34d399; width: 81%; }
+    .fill-net  { background: #f59e0b; width: 58%; }
+    /* Features */
+    section.features { padding: 80px 5%; max-width: 1100px; margin: 0 auto; }
+    h2.section-title { font-size: 1.9rem; font-weight: 800; margin-bottom: .5rem; }
+    .section-sub { color: var(--gray3); margin-bottom: 3rem; font-size: 1rem; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .feature-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.75rem; transition: box-shadow .2s, transform .2s; }
+    .feature-card:hover { box-shadow: 0 8px 32px rgba(6,182,212,.12); transform: translateY(-3px); }
+    .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: .5rem; }
+    .feature-card p { font-size: .9rem; color: var(--gray2); }
+    /* Target sectors */
+    .sectors { background: var(--gray4); padding: 80px 5%; }
+    .sectors-inner { max-width: 1000px; margin: 0 auto; }
+    .sectors-inner h2 { text-align: center; font-size: 1.9rem; font-weight: 800; margin-bottom: .5rem; }
+    .sectors-sub { text-align: center; color: var(--gray3); margin-bottom: 2.5rem; }
+    .sector-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+    .sector-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; text-align: center; }
+    .sector-icon { font-size: 2.5rem; margin-bottom: .75rem; }
+    .sector-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: .5rem; }
+    .sector-card p { font-size: .85rem; color: var(--gray3); }
+    /* Pricing */
+    .pricing-wrap { padding: 80px 5%; }
+    .pricing-inner { max-width: 1000px; margin: 0 auto; }
+    .pricing-inner h2 { text-align: center; font-size: 1.9rem; font-weight: 800; margin-bottom: .5rem; }
+    .pricing-sub { text-align: center; color: var(--gray3); margin-bottom: 2.5rem; }
+    .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+    .plan { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 2rem 1.5rem; text-align: center; }
+    .plan.popular { border-color: var(--cyan); box-shadow: 0 0 0 2px var(--cyan); }
+    .plan-badge { background: var(--cyan); color: #fff; font-size: .75rem; padding: .2rem .7rem; border-radius: 999px; display: inline-block; margin-bottom: .5rem; }
+    .plan h3 { font-size: 1.1rem; margin-bottom: .5rem; }
+    .plan .price { font-size: 1.8rem; font-weight: 800; color: var(--gray1); margin-bottom: .25rem; }
+    .plan .price span { font-size: 1rem; font-weight: 400; color: var(--gray3); }
+    .plan .price-note { font-size: .8rem; color: var(--cyan-d); font-weight: 600; margin-bottom: 1rem; }
+    .plan ul { list-style: none; text-align: left; margin: 1rem 0; font-size: .88rem; }
+    .plan ul li { padding: .3rem 0; border-bottom: 1px solid #f3f4f6; }
+    .plan ul li::before { content: '✓ '; color: var(--green); font-weight: 700; }
+    .plan-cta { display: block; background: var(--cyan); color: #fff; padding: .75rem; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 1.5rem; }
+    .plan-cta:hover { background: var(--cyan-d); }
+    .plan-cta.outline { background: transparent; border: 2px solid var(--cyan); color: var(--cyan); }
+    .plan-cta.outline:hover { background: var(--cyan); color: #fff; }
+    .subsidy-note { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 1rem 1.5rem; margin-top: 1.5rem; text-align: center; font-size: .9rem; color: var(--green); font-weight: 600; }
+    .cta-section { background: linear-gradient(135deg, #0f172a, #0a2540); color: #fff; text-align: center; padding: 80px 5%; }
+    .cta-section h2 { font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+    .cta-section p { color: #94a3b8; max-width: 520px; margin: 0 auto 2rem; }
+    footer { background: var(--navy); color: #475569; text-align: center; padding: 2rem; font-size: .85rem; }
+    footer a { color: #64748b; text-decoration: none; }
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 1.7rem; }
+      .zt-axes { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">ZeroVis JP</div>
+  <a href="mailto:contact@finops-jp.com" class="nav-cta">資料請求</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">NISC / 総務省ガイドライン対応 · IT導入補助金</div>
+  <h1>ゼロトラストへの移行を<br><span>可視化・自動化</span>する</h1>
+  <p>組織のID・デバイス・アプリ・ネットワークを4軸でスコアリング。NISC・総務省ガイドラインへの準拠ギャップを可視化し、IT導入補助金申請書をAIがワンクリック生成します。</p>
+  <div class="hero-btns">
+    <a href="mailto:contact@finops-jp.com" class="btn-primary">資料請求・デモを申し込む →</a>
+    <a href="#features" class="btn-secondary">機能を見る</a>
+  </div>
+</div>
+
+<div class="target">
+  <div class="target-item"><span class="target-icon">🏛️</span>地方自治体</div>
+  <div class="target-item"><span class="target-icon">🏭</span>中堅製造業</div>
+  <div class="target-item"><span class="target-icon">🏥</span>医療機関</div>
+  <div class="target-item"><span class="target-icon">🏦</span>地銀・信金</div>
+</div>
+
+<!-- ZT Score Demo -->
+<div class="score-section">
+  <div class="score-inner">
+    <h2>ゼロトラスト成熟度スコア</h2>
+    <p class="score-sub">NIST SP 800-207 ベース・4軸スコアリング（0〜100点）</p>
+    <div class="zt-dashboard">
+      <div class="zt-header">
+        <span class="zt-title">ZeroVis JP — ゼロトラスト成熟度ダッシュボード</span>
+        <div>
+          <div class="zt-score-main">69</div>
+          <div class="zt-score-label">総合スコア / 100</div>
+        </div>
+      </div>
+      <div class="zt-axes">
+        <div class="zt-axis">
+          <div class="zt-axis-name">ID / アクセス管理</div>
+          <div class="zt-axis-score" style="color:#67e8f9">65点</div>
+          <div class="zt-axis-bar"><div class="zt-axis-fill fill-id"></div></div>
+        </div>
+        <div class="zt-axis">
+          <div class="zt-axis-name">デバイス管理</div>
+          <div class="zt-axis-score" style="color:#a78bfa">72点</div>
+          <div class="zt-axis-bar"><div class="zt-axis-fill fill-dev"></div></div>
+        </div>
+        <div class="zt-axis">
+          <div class="zt-axis-name">アプリケーション</div>
+          <div class="zt-axis-score" style="color:#34d399">81点</div>
+          <div class="zt-axis-bar"><div class="zt-axis-fill fill-app"></div></div>
+        </div>
+        <div class="zt-axis">
+          <div class="zt-axis-name">ネットワーク</div>
+          <div class="zt-axis-score" style="color:#fbbf24">58点</div>
+          <div class="zt-axis-bar"><div class="zt-axis-fill fill-net"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Features -->
+<section class="features" id="features">
+  <h2 class="section-title">主要機能</h2>
+  <p class="section-sub">「ゼロトラストを進めたいが、どこから始めればいいかわからない」を解決します</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>4軸成熟度スコアリング</h3>
+      <p>ID・デバイス・アプリケーション・ネットワークの4軸をNIST SP 800-207ベースで評価。現在の成熟度レベルと目標値をビジュアルで把握できます。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏛️</div>
+      <h3>NISC / 総務省GL 自動チェック</h3>
+      <p>政府ゼロトラスト移行ガイドライン（総務省2023年版・NISC対策基準）との準拠ギャップを項目ごとに可視化。優先対応事項を自動で提示します。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>IT導入補助金申請書 ワンクリック生成</h3>
+      <p>2026年度IT導入補助金（セキュリティ特枠）に対応した申請書・費用対効果説明書・セキュリティ対策説明書をClaude AIが自動生成。補助率最大2/3。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🗺️</div>
+      <h3>AI移行ロードマップ生成</h3>
+      <p>自治体・製造業・医療・金融それぞれの業種特性に合わせたゼロトラスト移行ロードマップをAIが日本語で自動生成。「今週やること」まで具体化します。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">👔</div>
+      <h3>経営層向けダッシュボード</h3>
+      <p>スコアの推移・準拠率・投資対効果をCXO・情報システム責任者が理解できるシンプルな表現でレポート化。取締役会への説明資料として即活用可能。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔗</div>
+      <h3>既存ツールとの連携</h3>
+      <p>Microsoft Entra ID・Intune・Microsoft Defender for Endpointと連携。既存のMicrosoft 365環境のスコアを自動取得し、追加エージェント不要で導入できます。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Target Sectors -->
+<div class="sectors">
+  <div class="sectors-inner">
+    <h2>対象セクター</h2>
+    <p class="sectors-sub">各業種の規制・補助金に特化した対応で、スムーズな導入をサポート</p>
+    <div class="sector-grid">
+      <div class="sector-card">
+        <div class="sector-icon">🏛️</div>
+        <h3>地方自治体</h3>
+        <p>総務省ゼロトラスト指針対応・マイナンバー利用事務対応・IT導入補助金申請サポート</p>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🏭</div>
+        <h3>中堅製造業</h3>
+        <p>VPN廃止後の移行計画・ISMS認証更新対応・OT/IТ境界のゼロトラスト化</p>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🏥</div>
+        <h3>医療機関</h3>
+        <p>医療情報システム安全管理ガイドライン対応・電子カルテシステムのアクセス管理強化</p>
+      </div>
+      <div class="sector-card">
+        <div class="sector-icon">🏦</div>
+        <h3>地銀・信金</h3>
+        <p>金融庁ガイドライン対応・インターネットバンキングの不正ログイン対策・内部統制強化</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pricing -->
+<div class="pricing-wrap">
+  <div class="pricing-inner">
+    <h2>料金プラン</h2>
+    <p class="pricing-sub">組織規模に合わせた3プラン。IT導入補助金で初年度コストを最大2/3削減。</p>
+    <div class="plans">
+      <div class="plan">
+        <h3>スモール</h3>
+        <div class="price">¥50,000<span>/月</span></div>
+        <div class="price-note">〜200ユーザー</div>
+        <ul>
+          <li>4軸スコアリング</li>
+          <li>NISC/総務省GL チェック</li>
+          <li>AI移行ロードマップ</li>
+          <li>月次レポート</li>
+        </ul>
+        <a href="mailto:contact@finops-jp.com" class="plan-cta outline">資料請求</a>
+      </div>
+      <div class="plan popular">
+        <div class="plan-badge">補助金対応</div>
+        <h3>スタンダード</h3>
+        <div class="price">¥150,000<span>/月</span></div>
+        <div class="price-note">〜1,000ユーザー</div>
+        <ul>
+          <li>全機能利用可能</li>
+          <li>IT導入補助金申請書生成</li>
+          <li>経営層PDFレポート</li>
+          <li>Microsoft 365 連携</li>
+          <li>Slack / メール通知</li>
+          <li>導入サポート付き</li>
+        </ul>
+        <a href="mailto:contact@finops-jp.com" class="plan-cta">デモを申し込む</a>
+      </div>
+      <div class="plan">
+        <h3>エンタープライズ</h3>
+        <div class="price">要相談</div>
+        <div class="price-note">1,000ユーザー〜</div>
+        <ul>
+          <li>SSO / SAML / SCIM 対応</li>
+          <li>カスタム準拠基準設定</li>
+          <li>オンプレミス対応可</li>
+          <li>専任導入コンサルタント</li>
+          <li>SLA 99.9%保証</li>
+        </ul>
+        <a href="mailto:contact@finops-jp.com" class="plan-cta outline">個別見積もり</a>
+      </div>
+    </div>
+    <div class="subsidy-note">💰 IT導入補助金（セキュリティ特枠）申請サポート付き — 初年度コストを最大 2/3 削減できます</div>
+  </div>
+</div>
+
+<div class="cta-section">
+  <h2>ゼロトラスト移行を、今日から始める</h2>
+  <p>β版ユーザーを5組織限定で募集中。IT導入補助金申請の無償サポートも提供します。</p>
+  <a href="mailto:contact@finops-jp.com?subject=ZeroVis JP 資料請求・デモ申込" class="btn-primary">資料請求・デモを申し込む →</a>
+</div>
+
+<footer>
+  <p>&copy; 2026 ZeroVis JP — <a href="mailto:contact@finops-jp.com">contact@finops-jp.com</a></p>
+</footer>
+
+</body>
+</html>
